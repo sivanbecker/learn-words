@@ -133,3 +133,50 @@ body {
 #testSelect:hover {
     background-color: #f8f8f8; /* Slightly change background on hover for visual feedback */
 }
+
+
+#resetGameButton {
+    display: inline-block; /* Allows width and height to be set */
+    padding: 10px 20px; /* Adds space inside the button */
+    font-size: 18px; /* Increases the font size for better visibility */
+    text-align: center; /* Centers the text inside the button */
+    margin: 10px; /* Adds margin around the button */
+    background-color: #007BFF; /* Sets a blue background color */
+    color: white; /* Sets the text color to white */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    text-decoration: none; /* Removes underline from the link */
+    cursor: pointer; /* Shows a pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+#resetGameButton:hover {
+    background-color: #0056b3; /* Darker shade on hover for feedback */
+}
+.control-panel {
+    display: flex; /* Aligns children inline */
+    justify-content: space-between; /* Distributes space between and around content items */
+    align-items: center; /* Aligns items vertically in the center */
+   
+    padding: 10px; /* Padding around the container */
+}
+
+#testSelect {
+    flex-grow: 1; /* Allows the select element to grow and fill the space */
+    margin-right: 10px; /* Adds some space between the select and the button */
+}
+
+#resetGameButton {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#resetGameButton:hover {
+    background-color: #0056b3;
+}

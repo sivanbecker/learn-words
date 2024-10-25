@@ -11,14 +11,18 @@
 
     <div class="score-display" id="scoreDisplay">נקודות: 0</div>
     <input type="text" id="nameInput" placeholder="מה שמך?" oninput="updateName()">
-    <select id="testSelect"></select> <!-- Selection dropdown for languages -->
+    <div class="control-panel">
+       
+        <a href="javascript:void(0);" id="resetGameButton" onclick="resetGame()">עירבוב</a>
+        <select id="testSelect"></select>
+    </div>
+    
     <div class="status-message" id="statusMessage"></div>
     <div class="instructions">יש לגרור כל מילה את התרגום שלה.</div>
     <div class="game-area">
         <div class="word-container" id="wordContainer"></div>
         <div class="separator"></div>
         <div class="translation-container" id="translationContainer"></div>
-        <a href="javascript:void(0);" onclick="resetGame()">עירבוב </a>
     </div>
     <script src="list.js"></script>
     <script src="gameLogic.js"></script>
