@@ -15,14 +15,10 @@ function shuffleArray(array) {
 }
 
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const select = document.getElementById('testSelect');
 
-    // Default option that prompts user to make a selection
-    let defaultOption = document.createElement('option');
-    defaultOption.value = "";
-    defaultOption.textContent = "יש לבחור הכתבה";
-    select.appendChild(defaultOption);
+
 
     // Append options from the list to the select element
     list.forEach(item => {
@@ -33,15 +29,14 @@ document.addEventListener('DOMContentLoaded', function() {
         select.appendChild(option);
     });
 
-    // Initialize the event listener for change
-    select.addEventListener('change', function() {
-        if (this.value) {
-            loadWords(this.options[this.selectedIndex].dataset.lang); // Pass language to loadWords
-        }
+
+    select.addEventListener('change', function () {
+        loadSelected();
     });
+    loadSelected();
 });
 
-function resetGame(params) {
+function loadSelected() {
     const select = document.getElementById('testSelect');
     loadWords(select.options[select.selectedIndex].dataset.lang);
 }
@@ -68,8 +63,8 @@ function loadWords(lang) {
 }
 
 
-function initializeGame(language='en-US') {
- 
+function initializeGame(language = 'en-US') {
+
     if (!words || !Array.isArray(words)) return;
 
     const wordContainer = document.getElementById('wordContainer');
@@ -151,7 +146,7 @@ function drop(event) {
         showMessage(true);
         if (score === words.length) {
             document.getElementById('statusMessage').textContent = "המשחק הסתיים בהצלחה!";
-            startConfetti();
+            showConfetti();
         }
     } else {
         showMessage(false);
@@ -173,7 +168,7 @@ function updateScore(newScore) {
     document.getElementById('scoreDisplay').textContent = `נקודות: ${score}`;
 }
 
-function startConfetti() {
+function showConfetti() {
     const confettiCount = 100;
     const confettiElement = document.createElement('div');
     document.body.appendChild(confettiElement);
@@ -192,9 +187,4 @@ function startConfetti() {
     setTimeout(() => confettiElement.remove(), 3000); // Remove confetti after 3 seconds
 }
 
-// Call startConfetti when the game ends successfully
-// For demonstration, you can call it on document load
-document.addEventListener('DOMContentLoaded', startConfetti);
-
-// initializeGame();
 
