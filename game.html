@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="he">
+
+<head>
+    <meta charset="UTF-8">
+    <title>משחק התאמת מילים</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="score-display" id="scoreDisplay">נקודות: 0</div>
+    <input type="text" id="nameInput" placeholder="מה שמך?" oninput="updateName()">
+    <div class="status-message" id="statusMessage"></div>
+    <div class="instructions">יש לגרור כל מילה אל התרגום שלה.</div>
+    <div class="game-area">
+        <div class="word-container" id="wordContainer"></div>
+        <div class="separator"></div>
+        <div class="translation-container" id="translationContainer"></div>
+        <a href="javascript:initializeGame()" id="reset" onclick="initializeGame()">עירבוב </a>
+    </div>
+
+    <script src="list.js"></script>
+    <script src="gameLogic.js"></script>
+</body>
+
+
+</html>
