@@ -78,8 +78,22 @@ function initializeGame(language = 'en-US') {
 
     function speakText(text) {
         const synth = window.speechSynthesis;
+
+        // Cancel any ongoing speech to clear the queue
+        synth.cancel();
+
         const utterance = new SpeechSynthesisUtterance(text);
+
         utterance.lang = language; // Set the language
+        const voices = synth.getVoices();
+        const v = voices.find(voice => voice.lang === language);
+        if (!v) {
+            console.error(`Voice for language ${language} not found`);
+        }
+        else {
+            utterance.voice = v;
+        }
+
         synth.speak(utterance);
     }
 
