@@ -117,3 +117,19 @@ body {
     font-weight: bold;
 
 }
+
+#testSelect {
+    padding: 10px 20px; /* Increase padding to make it larger */
+    font-size: 18px; /* Larger font size for better readability */
+    margin: 20px auto; /* Center the select box horizontally and add vertical spacing */
+    display: block; /* Make it a block element to take width settings properly */
+    cursor: pointer; /* Shows a pointer cursor on hover */
+    background-color: #ffffff; /* Background color */
+    color: #000000; /* Text color */
+    border: 2px solid #007BFF; /* Border properties */
+    border-radius: 5px; /* Rounded corners */
+}
+
+#testSelect:hover {
+    background-color: #f8f8f8; /* Slightly change background on hover for visual feedback */
+}
