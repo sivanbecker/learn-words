@@ -3,25 +3,25 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>משחק התאמת מילים</title>
+    <title> התאמת מילים</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+   
     <div class="score-display" id="scoreDisplay">נקודות: 0</div>
     <input type="text" id="nameInput" placeholder="מה שמך?" oninput="updateName()">
+    <select id="testSelect"></select> <!-- Selection dropdown for languages -->
     <div class="status-message" id="statusMessage"></div>
-    <div class="instructions">יש לגרור כל מילה אל התרגום שלה.</div>
+    <div class="instructions">יש לבחור הכתבה בראש הדף, ולגרור כל מילה את התרגום שלה.</div>
     <div class="game-area">
         <div class="word-container" id="wordContainer"></div>
         <div class="separator"></div>
         <div class="translation-container" id="translationContainer"></div>
-        <a href="javascript:initializeGame()" id="reset" onclick="initializeGame()">עירבוב </a>
+        <a href="javascript:void(0);" onclick="initializeGame()">עירבוב </a>
     </div>
-
     <script src="list.js"></script>
     <script src="gameLogic.js"></script>
 </body>
-
 
 </html>

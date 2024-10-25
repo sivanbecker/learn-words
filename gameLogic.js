@@ -4,7 +4,8 @@ let score = 0;
 
 
 
-let totalWords = words.length;
+
+
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -13,7 +14,10 @@ function shuffleArray(array) {
     return array;
 }
 
-function initializeGame() {
+function initializeGame(language='en-US') {
+    debugger
+    if (!words || !Array.isArray(words)) return;
+
     const wordContainer = document.getElementById('wordContainer');
     const translationContainer = document.getElementById('translationContainer');
     wordContainer.innerHTML = '';
@@ -26,39 +30,39 @@ function initializeGame() {
     function speakText(text) {
         const synth = window.speechSynthesis;
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US'; // Set the language
+        utterance.lang = language; // Set the language
         synth.speak(utterance);
     }
-    
+
     let speakTimeout; // Declare a variable to hold the timeout
-    
+
     shuffledWords.forEach(word => {
         const wordDiv = document.createElement('div');
         wordDiv.className = 'word';
         wordDiv.textContent = word.text;
         wordDiv.draggable = true;
-    
+
         // Existing event listener for drag start
         wordDiv.addEventListener('dragstart', dragStart);
-    
+
         // Modified event listener for mouse enter
-        wordDiv.addEventListener('mouseenter', function() {
+        wordDiv.addEventListener('mouseenter', function () {
             // Set a timeout to speak the word after 1 second
-            speakTimeout = setTimeout(function() {
+            speakTimeout = setTimeout(function () {
                 speakText(wordDiv.textContent);
             }, 1000); // 1000 milliseconds delay
         });
-    
+
         // Add event listener for mouse leave
-        wordDiv.addEventListener('mouseleave', function() {
+        wordDiv.addEventListener('mouseleave', function () {
             // Clear the timeout if the user leaves the word before 1 second
             clearTimeout(speakTimeout);
         });
-    
+
         wordContainer.appendChild(wordDiv);
     });
-    
-    
+
+
 
     shuffledTranslations.forEach(word => {
         const translationDiv = document.createElement('div');
@@ -91,7 +95,7 @@ function drop(event) {
         });
         updateScore(score + 1);
         showMessage(true);
-        if (score === totalWords) {
+        if (score === words.length) {
             document.getElementById('statusMessage').textContent = "המשחק הסתיים בהצלחה!";
             startConfetti();
         }
@@ -138,5 +142,5 @@ function startConfetti() {
 // For demonstration, you can call it on document load
 document.addEventListener('DOMContentLoaded', startConfetti);
 
-initializeGame();
+// initializeGame();
 
