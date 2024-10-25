@@ -14,7 +14,7 @@ function shuffleArray(array) {
     return array;
 }
 
-
+let hasEnabledVoice = false;
 document.addEventListener('DOMContentLoaded', function () {
     const select = document.getElementById('testSelect');
 
@@ -96,6 +96,14 @@ function initializeGame(language = 'en-US') {
 
         // Modified event listener for mouse enter
         wordDiv.addEventListener('mouseenter', function () {
+            if (!hasEnabledVoice) {
+                const lecture = new SpeechSynthesisUtterance('hello');
+                lecture.volume = 0;
+                speechSynthesis.speak(lecture);
+                hasEnabledVoice = true;
+            }
+
+
             // Set a timeout to speak the word after 1 second
             speakTimeout = setTimeout(function () {
                 speakText(wordDiv.textContent);
