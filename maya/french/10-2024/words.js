@@ -1,8 +1,8 @@
   words = [
-    { text: 'Salut', translation: 'הי -' },
-    { text: 'Bonjour', translation: 'בוקר טוב, שלום -' },
+    { text: 'Salut', translation: 'הי' },
+    { text: 'Bonjour', translation:  'שלום' },
     { text: "Comment tu t'appelles ?", translation: 'איך קוראים לך?' },
-    { text: "je m’appelle", translation: 'אני נקרא' },
+    { text: "je m’appelle", translation: 'שמי הוא' },
     { text: "un collège", translation: 'חטיבת ביניים' },
     { text: "un cahier", translation: 'מחברת' },
     { text: "un cahier d’exercices", translation: 'מחברת תרגולים' },
