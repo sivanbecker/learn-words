@@ -32,7 +32,7 @@ body {
 
 .game-area {
     width: 90%;
-    max-width: 1200px;
+    max-width: 1900px;
 }
 
 .word-container,
@@ -119,8 +119,8 @@ body {
 }
 
 #testSelect {
-    padding: 10px 20px; /* Increase padding to make it larger */
-    font-size: 18px; /* Larger font size for better readability */
+    padding: 5px 10px; /* Increase padding to make it larger */
+    font-size: 16px; /* Larger font size for better readability */
     margin: 20px auto; /* Center the select box horizontally and add vertical spacing */
     display: block; /* Make it a block element to take width settings properly */
     cursor: pointer; /* Shows a pointer cursor on hover */
@@ -167,8 +167,8 @@ body {
 }
 
 #resetGameButton {
-    padding: 10px 20px;
-    font-size: 18px;
+    padding: 5px 10px;
+    font-size: 16px;
     background-color: #007BFF;
     color: white;
     border-radius: 5px;
@@ -179,4 +179,37 @@ body {
 
 #resetGameButton:hover {
     background-color: #0056b3;
+}
+
+
+#decreaseFont, #increaseFont {
+    padding: 5px 10px;/* Standard padding to ensure buttons are the same size */
+    cursor: pointer;
+    border: 1px solid #007BFF;
+    border-radius: 5px;
+    background-color: #E1ECF4;
+    width: 50px; /* Fixed width to ensure buttons are the same size */
+    display: inline-block; /* Ensure the button does not stretch to fit its container */
+    text-align: center; /* Centers the text within the button */
+    line-height: 20px; /* Adjust line height to vertically center the text */
+    font-weight: bold;
+}
+
+#decreaseFont {
+    font-size: 12px; /* Smaller font size for "A-" */
+}
+
+#increaseFont {
+    font-size: 18px; /* Larger font size for "A+" */
+   
+}
+
+
+#voiceSelect, button {
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 16px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #007BFF;
 }

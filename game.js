@@ -31,17 +31,75 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     select.addEventListener('change', function () {
-        loadSelected();
+
+        loadSelectedTest();
     });
-    loadSelected();
+
+
+    loadSelectedTest();
 });
 
-function loadSelected() {
+function loadVoices(language) {
+    const voiceSelect = document.getElementById('voiceSelect');
+    voiceSelect.innerHTML = '';  // Clear previous options
+
+    let attempts = 0;
+    const maxAttempts = 50;  // Limit the number of retries
+
+    const checkVoices = () => {
+        const synth = window.speechSynthesis;
+        const voices = synth.getVoices().filter(voice => voice.lang.startsWith(language));
+
+        if (voices.length > 0 || attempts >= maxAttempts) {
+            voices.forEach(voice => {
+                const option = document.createElement('option');
+                option.textContent = voice.name + ' (' + voice.lang + ')';
+                option.value = voice.name;
+                voiceSelect.appendChild(option);
+            });
+        } else {
+            attempts++;
+            setTimeout(checkVoices, 50);  // Retry after 50 ms
+        }
+    };
+
+    checkVoices();  // Start checking for voices
+}
+function changeFontSize(change) {
+    const words = document.querySelectorAll('.word, .translation');
+    words.forEach(word => {
+        const currentSize = parseInt(window.getComputedStyle(word, null).getPropertyValue('font-size'), 10);
+        const newSize = currentSize + change;
+        word.style.fontSize = `${newSize}px`;
+    });
+    // Save the new font size to local storage
+    saveFontSizeToLocal(words[0].style.fontSize);
+}
+
+function saveFontSizeToLocal(fontSize) {
+    localStorage.setItem('fontSize', fontSize);
+}
+function loadFontSize() {
+    const savedFontSize = localStorage.getItem('fontSize');
+    if (savedFontSize) {
+        const words = document.querySelectorAll('.word, .translation');
+        words.forEach(word => {
+            word.style.fontSize = savedFontSize;
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadFontSize);
+
+function loadSelectedTest() {
     const select = document.getElementById('testSelect');
+    setTimeout(() => {
+        loadVoices(select.options[select.selectedIndex].dataset.lang);
+    }, 100);
     loadWords(select.options[select.selectedIndex].dataset.lang);
 }
 
-function loadWords(lang) {
+function loadWords(language) {
     const select = document.getElementById('testSelect');
     const scriptUrl = select.value;
     if (scriptUrl) {
@@ -56,8 +114,10 @@ function loadWords(lang) {
         script.src = scriptUrl;
         script.setAttribute('data-source', 'dynamic-words'); // Mark the script to identify it later
         document.body.appendChild(script);
+        loadFontSize();
         script.onload = () => {
-            initializeGame(lang); // Initialize the game once the words are loaded, passing the language
+           
+            initializeGame(language); // Initialize the game once the words are loaded, passing the language
         };
     }
 }
@@ -77,24 +137,12 @@ function initializeGame(language = 'en-US') {
     const shuffledTranslations = shuffleArray([...words]);
 
     function speakText(text) {
-        const synth = window.speechSynthesis;
-
-        // Cancel any ongoing speech to clear the queue
-        synth.cancel();
-
+        const voiceSelect = document.getElementById('voiceSelect');
+        const selectedVoice = voiceSelect.value;
         const utterance = new SpeechSynthesisUtterance(text);
-
-        utterance.lang = language; // Set the language
-        const voices = synth.getVoices();
-        const v = voices.find(voice => voice.lang === language);
-        if (!v) {
-            console.error(`Voice for language ${language} not found`);
-        }
-        else {
-            utterance.voice = v;
-        }
-
-        synth.speak(utterance);
+        utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === selectedVoice);
+        utterance.lang = language;
+        speechSynthesis.speak(utterance);
     }
 
     let speakTimeout; // Declare a variable to hold the timeout
@@ -105,6 +153,7 @@ function initializeGame(language = 'en-US') {
         wordDiv.textContent = word.text;
         wordDiv.draggable = true;
 
+       
         // Existing event listener for drag start
         wordDiv.addEventListener('dragstart', dragStart);
 
@@ -131,6 +180,7 @@ function initializeGame(language = 'en-US') {
         });
 
         wordContainer.appendChild(wordDiv);
+       
     });
 
 
@@ -142,7 +192,9 @@ function initializeGame(language = 'en-US') {
         translationDiv.addEventListener('dragover', dragOver);
         translationDiv.addEventListener('drop', drop);
         translationContainer.appendChild(translationDiv);
+         
     });
+    loadFontSize();
 }
 
 function dragStart(event) {
