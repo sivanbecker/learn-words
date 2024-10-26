@@ -170,7 +170,7 @@ function initializeGame(language = 'en-US') {
             // Set a timeout to speak the word after 1 second
             speakTimeout = setTimeout(function () {
                 speakText(wordDiv.textContent);
-            }, 500); //  delay
+            }, 1000); // 1000 milliseconds delay
         });
 
         // Add event listener for mouse leave
