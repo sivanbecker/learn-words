@@ -121,7 +121,7 @@ body {
 #testSelect {
     padding: 5px 10px; /* Increase padding to make it larger */
     font-size: 16px; /* Larger font size for better readability */
-    margin: 20px auto; /* Center the select box horizontally and add vertical spacing */
+   
     display: block; /* Make it a block element to take width settings properly */
     cursor: pointer; /* Shows a pointer cursor on hover */
     background-color: #ffffff; /* Background color */
@@ -135,24 +135,7 @@ body {
 }
 
 
-#resetGameButton {
-    display: inline-block; /* Allows width and height to be set */
-    padding: 10px 20px; /* Adds space inside the button */
-    font-size: 18px; /* Increases the font size for better visibility */
-    text-align: center; /* Centers the text inside the button */
-    margin: 10px; /* Adds margin around the button */
-    background-color: #007BFF; /* Sets a blue background color */
-    color: white; /* Sets the text color to white */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    text-decoration: none; /* Removes underline from the link */
-    cursor: pointer; /* Shows a pointer cursor on hover */
-    transition: background-color 0.3s; /* Smooth transition for hover effect */
-}
-
-#resetGameButton:hover {
-    background-color: #0056b3; /* Darker shade on hover for feedback */
-}
+ 
 .control-panel {
     display: flex; /* Aligns children inline */
     justify-content: space-between; /* Distributes space between and around content items */
@@ -212,4 +195,27 @@ body {
     padding: 5px 10px;
     border-radius: 5px;
     border: 1px solid #007BFF;
+}
+
+
+.control-panel {
+    display: flex;
+    align-items: flex-end;
+    padding: 10px;
+ margin-top: 50px;
+}
+
+.dropdown-group {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.dropdown-group  label{
+    direction: rtl;
+    padding-right: 15px;;
+}
+
+#resetGameButton, #decreaseFont, #increaseFont {
+    margin-right: 10px;
 }

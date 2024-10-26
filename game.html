@@ -11,15 +11,22 @@
 
     <div class="score-display" id="scoreDisplay">נקודות: 0</div>
     <div class="control-panel">
-        <a href="javascript:void(0);" id="resetGameButton" onclick="loadSelectedTest()">עירבוב</a>
-
+        <button href="javascript:void(0);" id="resetGameButton" onclick="loadSelectedTest()">עירבוב</button>
         <button id="decreaseFont" onclick="changeFontSize(-1)">A-</button>
         <button id="increaseFont" onclick="changeFontSize(1)">A+</button>
-
-        <select id="voiceSelect"></select>
-        <select id="testSelect"></select>
-
+    
+        <div class="dropdown-group">
+            <label for="voiceSelect">קולות מותקנים במכשיר:</label>
+            <select id="voiceSelect"></select>
+        </div>
+    
+        <div class="dropdown-group">
+            <label for="testSelect">בחר שפה:</label>
+            <select id="testSelect"></select>
+        </div>
     </div>
+    
+    
 
 
     <div class="status-message" id="statusMessage"></div>
