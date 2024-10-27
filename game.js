@@ -116,7 +116,7 @@ function loadWords(language) {
         document.body.appendChild(script);
         loadFontSize();
         script.onload = () => {
-           
+
             initializeGame(language); // Initialize the game once the words are loaded, passing the language
         };
     }
@@ -153,7 +153,7 @@ function initializeGame(language = 'en-US') {
         wordDiv.textContent = word.text;
         wordDiv.draggable = true;
 
-       
+
         // Existing event listener for drag start
         wordDiv.addEventListener('dragstart', dragStart);
 
@@ -180,7 +180,7 @@ function initializeGame(language = 'en-US') {
         });
 
         wordContainer.appendChild(wordDiv);
-       
+
     });
 
 
@@ -192,7 +192,7 @@ function initializeGame(language = 'en-US') {
         translationDiv.addEventListener('dragover', dragOver);
         translationDiv.addEventListener('drop', drop);
         translationContainer.appendChild(translationDiv);
-         
+
     });
     loadFontSize();
 }
@@ -208,14 +208,19 @@ function dragOver(event) {
 function drop(event) {
     event.preventDefault();
     const draggedText = event.dataTransfer.getData("text");
+    const targetElement = event.target;
     if (words.some(word => word.text === draggedText && word.translation === event.target.textContent)) {
         event.target.classList.add("correct");
-        event.target.style.backgroundColor = 'lightgreen';
+        targetElement.style.fontWeight = 'normal'
+        targetElement.style.opacity = "0.5";
+        // event.target.style.backgroundColor = 'lightgreen';
         document.querySelectorAll('.word').forEach(wordDiv => {
             if (wordDiv.textContent === draggedText) {
                 wordDiv.style.opacity = "0.5";
+                wordDiv.style.fontWeight = 'normal'
             }
         });
+
         updateScore(score + 1);
         showMessage(true);
         if (score === words.length) {
