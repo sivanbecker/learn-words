@@ -135,15 +135,7 @@ function initializeGame(language = 'en-US') {
 
     const shuffledWords = shuffleArray([...words]);
     const shuffledTranslations = shuffleArray([...words]);
-
-    function speakText(text) {
-        const voiceSelect = document.getElementById('voiceSelect');
-        const selectedVoice = voiceSelect.value;
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === selectedVoice);
-        utterance.lang = language;
-        speechSynthesis.speak(utterance);
-    }
+ 
 
     let speakTimeout; // Declare a variable to hold the timeout
 
@@ -169,7 +161,12 @@ function initializeGame(language = 'en-US') {
 
             // Set a timeout to speak the word after 1 second
             speakTimeout = setTimeout(function () {
-                speakText(wordDiv.textContent);
+                const voiceSelect = document.getElementById('voiceSelect');
+                const selectedVoice = voiceSelect.value;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === selectedVoice);
+                utterance.lang = language;
+                speechSynthesis.speak(utterance);
             }, 1000); // 1000 milliseconds delay
         });
 
@@ -212,11 +209,11 @@ function drop(event) {
     if (words.some(word => word.text === draggedText && word.translation === event.target.textContent)) {
         event.target.classList.add("correct");
         targetElement.style.fontWeight = 'normal'
-        targetElement.style.opacity = "0.5";
+        targetElement.style.visibility = "hidden";
         // event.target.style.backgroundColor = 'lightgreen';
         document.querySelectorAll('.word').forEach(wordDiv => {
             if (wordDiv.textContent === draggedText) {
-                wordDiv.style.opacity = "0.5";
+                wordDiv.style.visibility = "hidden";
                 wordDiv.style.fontWeight = 'normal'
             }
         });
