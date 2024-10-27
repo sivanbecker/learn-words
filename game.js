@@ -163,7 +163,7 @@ function initializeGame(language = 'en-US') {
             speakTimeout = setTimeout(function () {
                 const voiceSelect = document.getElementById('voiceSelect');
                 const selectedVoice = voiceSelect.value;
-                const utterance = new SpeechSynthesisUtterance(text);
+                const utterance = new SpeechSynthesisUtterance(wordDiv.textContent);
                 utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === selectedVoice);
                 utterance.lang = language;
                 speechSynthesis.speak(utterance);
