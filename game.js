@@ -39,6 +39,23 @@ document.addEventListener('DOMContentLoaded', function () {
     loadSelectedTest();
 });
 
+function loadVoiceSettings() {
+    const savedVoiceName = localStorage.getItem('selectedVoice');
+    if (savedVoiceName) {
+        const voiceSelect = document.getElementById('voiceSelect');
+        const options = voiceSelect.options;
+        for (let i = 0; i < options.length; i++) {
+            if (options[i].value === savedVoiceName) {
+                voiceSelect.selectedIndex = i;
+                break;
+            }
+        }
+    }
+}
+
+function saveVoiceSettings(voiceName) {
+    localStorage.setItem('selectedVoice', voiceName);
+}
 function loadVoices(language) {
     const voiceSelect = document.getElementById('voiceSelect');
     voiceSelect.innerHTML = '';  // Clear previous options
@@ -57,6 +74,7 @@ function loadVoices(language) {
                 option.value = voice.name;
                 voiceSelect.appendChild(option);
             });
+            loadVoiceSettings();  // Load the saved voice settings after the options are added
         } else {
             attempts++;
             setTimeout(checkVoices, 50);  // Retry after 50 ms
@@ -65,6 +83,7 @@ function loadVoices(language) {
 
     checkVoices();  // Start checking for voices
 }
+
 function changeFontSize(change) {
     const words = document.querySelectorAll('.word, .translation');
     words.forEach(word => {
@@ -90,12 +109,18 @@ function loadFontSize() {
 }
 
 document.addEventListener('DOMContentLoaded', loadFontSize);
+document.getElementById('voiceSelect').addEventListener('change', function() {
+    const selectedVoice = this.value;
+    saveVoiceSettings(selectedVoice);
+});
 
 function loadSelectedTest() {
     const select = document.getElementById('testSelect');
+    
     setTimeout(() => {
         loadVoices(select.options[select.selectedIndex].dataset.lang);
     }, 100);
+
     loadWords(select.options[select.selectedIndex].dataset.lang);
 }
 
@@ -135,7 +160,7 @@ function initializeGame(language = 'en-US') {
 
     const shuffledWords = shuffleArray([...words]);
     const shuffledTranslations = shuffleArray([...words]);
- 
+
 
     let speakTimeout; // Declare a variable to hold the timeout
 
