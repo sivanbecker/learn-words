@@ -1,8 +1,58 @@
+
+html {
+    font-size: 16px;
+}
+
+@media (max-width: 1200px) {
+    html {
+        font-size: 19px;
+    }
+}
+
+body {
+    font-size: 1rem;
+}
+
+@keyframes blink-once {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+#newGameBtn.blink-once {
+    animation: blink-once 0.3s step-end 5;
+}
+
+.highlight {
+    background-color: lavender !important;
+}
+
+.dragging {
+    box-shadow: 0px 0px 10px 5px rgba(0, 123, 255, 0.5);
+    border: 2px dashed #007bff;
+}
+
+@keyframes blink-correct {
+    0%, 100% { background-color: green; opacity: 1; }
+    50% { background-color: green; opacity: 0.5; }
+}
+
+@keyframes blink-incorrect {
+    0%, 100% { background-color: red; opacity: 1; }
+    50% { background-color: red; opacity: 0.5; }
+}
+
+.blink-correct {
+    animation: blink-correct 0.2s step-end 5;
+}
+
+.blink-incorrect {
+    animation: blink-incorrect 0.2s step-end 2;
+}
+
 @keyframes fall {
     0% {
         transform: translateY(0) rotate(0deg);
     }
-
     100% {
         transform: translateY(500px) rotate(360deg);
     }
@@ -17,7 +67,7 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: "Arial", sans-serif;
     background-image: url("./back.jpg");
     background-repeat: no-repeat;
     background-position: center center;
@@ -28,11 +78,16 @@ body {
     align-items: center;
     justify-content: flex-start;
     height: 100vh;
+    direction: rtl;
 }
 
 .game-area {
     width: 90%;
     max-width: 1900px;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .word-container,
@@ -40,21 +95,29 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
+    gap: 15px;
     margin: 10px 0;
-    font-weight: bold;
+    font-weight: 400;
+    max-width: 768px;
 }
 
 .word,
 .translation {
-    border: 2px solid #007BFF;
+    border: 3px solid #007BFF;
     border-radius: 5px;
-    padding: 10px;
+    padding: 5px;
     background-color: #E1ECF4;
     cursor: pointer;
     user-select: none;
-    font-size: 25px;
-    margin: 5px 10px;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 1200px) {
+    .word,
+    .translation {
+        font-size: 1.1rem;
+    }
 }
 
 .translation {
@@ -62,192 +125,298 @@ body {
 }
 
 .separator {
-    width: 100%;
-    border-bottom: 2px dashed #007BFF;
+    border: none;
+    height: 2px;
+    background: linear-gradient(to right, #fff, mediumpurple, #fff);
     margin: 20px 0;
 }
 
+@keyframes slide {
+    to {
+        left: 100%;
+    }
+}
+
 .instructions {
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 1rem;
+    font-weight: normal;
     color: #0056b3;
-    margin: 20px;
+    margin: 10px;
     text-align: center;
 }
 
-
-.score-display {
-    font-weight: bold;
-    margin: 20px;
-    text-align: center;
-    font-size: 20px;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-
+@media (max-width: 1200px) {
+    .instructions {font-size: 0.8rem;}
 }
 
 .status-message {
     font-weight: bold;
     position: fixed;
-    /* או absolute, תלוי במבנה הדף */
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 20px;
+    font-size: 1rem;
     background-color: #76B947;
-    /* צבע רקע - ניתן לשנות לפי העדפה */
     color: white;
-    /* צבע טקסט */
     padding: 10px 20px;
     border-radius: 0 0 10px 10px;
-    /* קורנרים מעוגלים בחלק התחתון */
 }
 
 #nameInput {
     padding: 10px;
-    margin-bottom: 20px;
     border: 2px solid #007BFF;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 1rem;
     display: block;
     margin: 20px auto;
     width: 200px;
     text-align: center;
-    /* Text aligned to the center */
 }
 
 #reset {
     color: green;
     font-weight: bold;
-
 }
 
-#testSelect {
-    padding: 5px 10px;
-    /* Increase padding to make it larger */
-    font-size: 16px;
-    /* Larger font size for better readability */
-
-    display: block;
-    /* Make it a block element to take width settings properly */
+#testSelect, #testSelectClone {
+    font-size: 1rem;
+    xdisplay: block;
     cursor: pointer;
-    /* Shows a pointer cursor on hover */
     background-color: #ffffff;
-    /* Background color */
     color: #000000;
-    /* Text color */
     border: 2px solid #007BFF;
-    /* Border properties */
     border-radius: 5px;
-    /* Rounded corners */
+    direction: rtl;
+    padding: 3px;
 }
 
 #testSelect:hover {
     background-color: #f8f8f8;
-    /* Slightly change background on hover for visual feedback */
 }
-
-
 
 .control-panel {
+    margin-bottom: 10px;
     display: flex;
-    /* Aligns children inline */
-    justify-content: space-between;
-    /* Distributes space between and around content items */
-    align-items: center;
-    /* Aligns items vertically in the center */
-
+    justify-content: center;
+    align-items: flex-end;
     padding: 10px;
-    /* Padding around the container */
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    width: 100%;
+    flex-direction: row;
 }
 
-#testSelect {
-    flex-grow: 1;
-    /* Allows the select element to grow and fill the space */
-    margin-right: 10px;
-    /* Adds some space between the select and the button */
+.control-panel-bottom {
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 0;
+    right: -100%; /* Start hidden to the right */
+    max-width: 650px; /* Fixed width */
+    height: 100%; /* Full height */
+    background-color: #f0f0f0;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5); /* Optional shadow */
+    transition: right 0.3s;
+    padding-top: 55px;
 }
 
-#resetGameButton {
+.control-panel-bottom.active {
+    display: block;
+    right: 0; /* Slide in */
+}
+
+.control-panel-bottom div,
+.control-panel-bottom select,
+.control-panel-bottom button {
+    margin: 10px;
+    width: calc(100% - 20px); /* Adjust width to fit parent */
+}
+
+@media (max-width: 1200px) {
+    .control-panel {
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        width: 100%;
+        padding: 10px 80px 10px 10px;
+        gap: 5px;
+    }
+}
+
+#newGameBtn {
     padding: 5px 10px;
-    font-size: 16px;
+    font-size: 0.9rem;
     background-color: #007BFF;
     color: white;
     border-radius: 5px;
     text-decoration: none;
     cursor: pointer;
     transition: background-color 0.3s;
+    user-select: none;
 }
 
-#resetGameButton:hover {
+#newGameBtn:hover {
     background-color: #0056b3;
 }
 
-
 #decreaseFont,
 #increaseFont {
-    padding: 5px 10px;
-    /* Standard padding to ensure buttons are the same size */
+    padding: 5px;
     cursor: pointer;
     border: 1px solid #007BFF;
     border-radius: 5px;
     background-color: #E1ECF4;
     width: 50px;
-    /* Fixed width to ensure buttons are the same size */
     display: inline-block;
-    /* Ensure the button does not stretch to fit its container */
     text-align: center;
-    /* Centers the text within the button */
-    line-height: 20px;
-    /* Adjust line height to vertically center the text */
     font-weight: bold;
 }
 
 #decreaseFont {
-    font-size: 12px;
-    /* Smaller font size for "A-" */
+    font-weight: normal;
+    font-size: 0.9rem;
 }
 
 #increaseFont {
-    font-size: 18px;
-    /* Larger font size for "A+" */
-
+    font-weight: bold;
+    font-size: 1.2rem;
 }
-
 
 #voiceSelect,
 button {
     cursor: pointer;
     margin-right: 10px;
-    font-size: 16px;
+    font-size: 0.9rem;
     padding: 5px 10px;
     border-radius: 5px;
     border: 1px solid #007BFF;
-}
-
-
-.control-panel {
-    display: flex;
-    align-items: flex-end;
-    padding: 10px;
-    margin-top: 50px;
+    max-width: 250px;
+    user-select: none;
 }
 
 .dropdown-group {
     display: flex;
-    flex-direction: column;
-    margin-left: 20px;
+    flex-direction: row;
+    align-items: center;
 }
 
 .dropdown-group label {
     direction: rtl;
-    padding-right: 15px;
-    ;
+    padding-left: 5px;
 }
 
-#resetGameButton,
-#decreaseFont,
-#increaseFont {
-    margin-right: 10px;
+.buttons-group {
+    display: flex;
+    flex-direction: row;
 }
+
+.statistics {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 5px;
+    direction: rtl;
+    font-size: 1rem;
+    gap: 10px;
+}
+
+@media (max-width: 1200px) {
+    .statistics {
+        font-size: 0.6rem;
+    }
+}
+
+#scoreDisplay, #numFailures {font-weight: bold; font-size: 1.2rem;}
+
+@media (max-width: 1200px) {
+    #scoreDisplay, #numFailures {
+        font-size: 0.8rem;
+    }
+}
+
+.overlay-control {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 1.2rem;
+    color: white;
+    padding-top: 50px;
+}
+
+.overlay-control {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.overlay-title {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.overlay-text {
+    margin-bottom: 10px;
+    color: #ade8f4;
+    font-size: 1rem;
+}
+
+.overlay-button {
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.overlay-button:hover {
+    background-color: #0056b3;
+}
+
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    position: fixed;
+    top: 15px;
+    right: 7px;
+    z-index: 20;
+}
+
+.bar {
+    height: 3px;
+    width: 100%;
+    background-color: #333;
+    border-radius: 10px;
+}
+
+ 
+ 

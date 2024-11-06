@@ -1,4 +1,4 @@
-  words = [
+words = [
     { text: 'Salut', translation: 'הי' },
     { text: 'Bonjour', translation:  'שלום' },
     { text: "Comment tu t'appelles ?", translation: 'איך קוראים לך?' },

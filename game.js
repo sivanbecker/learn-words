@@ -1,9 +1,141 @@
+const list = [
+    {
+        user: "64cdd390-6bb7-4a8b-b0e0-b52294368613",
+        scriptUrl: "2024-nov-en-1.js",
+        name: "אנגלית 11-2024 חלק 1",
+        lang: 'en-US',
+    },
+    {
+        user: "64cdd390-6bb7-4a8b-b0e0-b52294368613",
+        scriptUrl: "2024-nov-en-2.js",
+        name: "אנגלית 11-2024 חלק 2",
+        lang: 'en-US',
+    },
+    {
+        user: "64cdd390-6bb7-4a8b-b0e0-b52294368613",
+        scriptUrl: "2024-nov-en-3.js",
+        name: "אנגלית 11-2024 חלק 3",
+        lang: 'en-US',
+    },
+    {
+        user: "64cdd390-6bb7-4a8b-b0e0-b52294368613",
+        scriptUrl: "2024-oct-fr.js",
+        name: "צרפתית 10-2024",
+        lang: 'fr-FR',
+    },
+    {
+        user: "396e2356-46d8-4dc3-a24b-7d006759a225",
+        scriptUrl: "/animals.js",
+        name: "חיות",
+        lang: 'en-US',
+    },
+    {
+        user: "396e2356-46d8-4dc3-a24b-7d006759a225",
+        scriptUrl: "/feelings.js",
+        name: "רגשות",
+        lang: 'en-US',
+    },
+    {
+        user: "396e2356-46d8-4dc3-a24b-7d006759a225",
+        scriptUrl: "/harry_potter.js",
+        name: "הארי פוטר",
+        lang: 'en-US',
+    }
+];
 
-let playerName = "שחקן"; // Default player name
+
 let score = 0;
+let failures = 0;
+let hasEnabledVoice = false;
+let speakTimeout;
+let startTime, endTime;
+let draggedElement = null;
+let draggedElementOriginal = null;
+let draggedWord = null;
+
+document.body.addEventListener('click', () => {
+    const lecture = new SpeechSynthesisUtterance('hello');
+    lecture.volume = 0;
+    speechSynthesis.speak(lecture);
+    hasEnabledVoice = true;
+}, {once: true});
 
 
+document.addEventListener('DOMContentLoaded', function () {
+    log('DOMContentLoaded innerWidth= ' + window.innerWidth);
+    const originalTestSelect = document.getElementById('testSelect');
 
+    // Populate both dropdowns
+    populateTestSelect(originalTestSelect);
+
+    // Add change event to original select
+    originalTestSelect.addEventListener('change', loadSelectedTest);
+
+    if (window.innerWidth <= 1200) {
+        const overlay = document.getElementById("overlay");
+        overlay.style.display = "flex";
+
+        // Clone the populated select
+        const testSelectClone = originalTestSelect.cloneNode(true);
+        testSelectClone.removeAttribute('id');
+        testSelectClone.id = 'testSelectClone';
+
+        // Add empty option only to clone
+        let emptyOption = document.createElement('option');
+        emptyOption.value = "";
+        emptyOption.textContent = "בחירת הכתבה";
+        testSelectClone.insertBefore(emptyOption, testSelectClone.firstChild);
+        testSelectClone.selectedIndex = 0;
+        testSelectClone.style.fontSize = '20px';
+
+        // Create a control panel on the overlay
+        const overlayControl = document.getElementById("overlay-control");
+        overlayControl.appendChild(testSelectClone);
+
+        testSelectClone.addEventListener('change', function () {
+            document.body.removeChild(overlay);
+            originalTestSelect.value = this.value;
+            loadSelectedTest();
+            const lecture = new SpeechSynthesisUtterance('hello');
+            lecture.volume = 0;
+            speechSynthesis.speak(lecture);
+            hasEnabledVoice = true;
+        });
+    } else {
+
+        loadSelectedTest();
+    }
+});
+
+function getGuid() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('guid'); // Assume 'guid' is the query string parameter
+}
+
+function populateTestSelect(selectElement) {
+    const guid = getGuid() ?? "64cdd390-6bb7-4a8b-b0e0-b52294368613";
+    list.filter(item => {
+        return item.user === guid
+    })
+        .forEach(item => {
+            let option = document.createElement('option');
+            option.value = `./${guid}/${item.scriptUrl}`;
+            log (option.value);
+            option.textContent = item.name;
+            option.dataset.lang = item.lang;
+            selectElement.appendChild(option);
+        });
+}
+
+// function populateTestSelect(selectElement) {
+//     list.forEach(item => {
+//         let option = document.createElement('option');
+//         option.value = item.scriptUrl;
+//         option.textContent = item.name;
+//         option.dataset.lang = item.lang;
+//         selectElement.appendChild(option);
+//     });
+// }
 
 
 function shuffleArray(array) {
@@ -14,74 +146,73 @@ function shuffleArray(array) {
     return array;
 }
 
-let hasEnabledVoice = false;
-document.addEventListener('DOMContentLoaded', function () {
+
+function log(msg) {
+    console.log(msg);
+    // const logElement = document.getElementById('log');
+    // const p = document.createElement('p');
+    // p.textContent = msg;
+    // logElement.insertBefore(p, logElement.firstChild);
+}
+
+
+function loadSelectedTest() {
     const select = document.getElementById('testSelect');
+    setTimeout(() => {
+        loadVoices(select.options[select.selectedIndex].dataset.lang);
+        loadWords(select.options[select.selectedIndex].dataset.lang);
+    }, 500);
 
+}
 
+function loadVoices(language) {
+    log('loadVoices ' + language);
+    const voiceSelect = document.getElementById('voiceSelect');
+    voiceSelect.innerHTML = '';
+    let attempts = 0, maxAttempts = 50;
+    voiceSelect.removeEventListener('change', saveSelectedVoice);
+    voiceSelect.addEventListener('change', saveSelectedVoice);
 
-    // Append options from the list to the select element
-    list.forEach(item => {
-        let option = document.createElement('option');
-        option.value = item.scriptUrl; // Store URL in value for loading script
-        option.textContent = item.name;
-        option.dataset.lang = item.lang; // Store language in data attribute
-        select.appendChild(option);
-    });
+    function saveSelectedVoice() {
+        log('saveSelectedVoice ' + this.value + ' ' + language);
+        localStorage.setItem('selectedVoice_' + language, this.value);
+    }
 
+    const checkVoices = () => {
+        const voices = speechSynthesis.getVoices().filter(voice => voice.lang.startsWith(language));
 
-    select.addEventListener('change', function () {
+        if (voices.length > 0 || attempts >= maxAttempts) {
+            log('checkVoices voices: ' + voices.length);
+            voices.forEach(voice => {
+                let option = document.createElement('option');
+                option.textContent = `${voice.name} (${voice.lang})`;
+                option.value = voice.name;
+                voiceSelect.appendChild(option);
+            });
+            loadVoiceSettings(language);
+        } else {
+            log('checkVoices will retry attempts: ' + attempts);
+            attempts++;
+            setTimeout(checkVoices, 50);
+        }
+    };
+    checkVoices();
+}
 
-        loadSelectedTest();
-    });
-
-
-    loadSelectedTest();
-});
-
-function loadVoiceSettings() {
-    const savedVoiceName = localStorage.getItem('selectedVoice');
+function loadVoiceSettings(language) {
+    log('loadVoiceSettings');
+    const savedVoiceName = localStorage.getItem('selectedVoice_' + language);
+    const voiceSelect = document.getElementById('voiceSelect');
     if (savedVoiceName) {
-        const voiceSelect = document.getElementById('voiceSelect');
-        const options = voiceSelect.options;
-        for (let i = 0; i < options.length; i++) {
-            if (options[i].value === savedVoiceName) {
-                voiceSelect.selectedIndex = i;
+        log('loadVoiceSettings savedVoiceName: ' + savedVoiceName);
+        for (let option of voiceSelect.options) {
+            if (option.value === savedVoiceName) {
+                log('savedVoiceName found loadVoiceSettings option.index: ' + option.index);
+                voiceSelect.selectedIndex = option.index;
                 break;
             }
         }
     }
-}
-
-function saveVoiceSettings(voiceName) {
-    localStorage.setItem('selectedVoice', voiceName);
-}
-function loadVoices(language) {
-    const voiceSelect = document.getElementById('voiceSelect');
-    voiceSelect.innerHTML = '';  // Clear previous options
-
-    let attempts = 0;
-    const maxAttempts = 50;  // Limit the number of retries
-
-    const checkVoices = () => {
-        const synth = window.speechSynthesis;
-        const voices = synth.getVoices().filter(voice => voice.lang.startsWith(language));
-
-        if (voices.length > 0 || attempts >= maxAttempts) {
-            voices.forEach(voice => {
-                const option = document.createElement('option');
-                option.textContent = voice.name + ' (' + voice.lang + ')';
-                option.value = voice.name;
-                voiceSelect.appendChild(option);
-            });
-            loadVoiceSettings();  // Load the saved voice settings after the options are added
-        } else {
-            attempts++;
-            setTimeout(checkVoices, 50);  // Retry after 50 ms
-        }
-    };
-
-    checkVoices();  // Start checking for voices
 }
 
 function changeFontSize(change) {
@@ -98,6 +229,7 @@ function changeFontSize(change) {
 function saveFontSizeToLocal(fontSize) {
     localStorage.setItem('fontSize', fontSize);
 }
+
 function loadFontSize() {
     const savedFontSize = localStorage.getItem('fontSize');
     if (savedFontSize) {
@@ -108,184 +240,336 @@ function loadFontSize() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', loadFontSize);
-document.getElementById('voiceSelect').addEventListener('change', function() {
-    const selectedVoice = this.value;
-    saveVoiceSettings(selectedVoice);
-});
-
-function loadSelectedTest() {
-    const select = document.getElementById('testSelect');
-    
-    setTimeout(() => {
-        loadVoices(select.options[select.selectedIndex].dataset.lang);
-    }, 100);
-
-    loadWords(select.options[select.selectedIndex].dataset.lang);
-}
-
 function loadWords(language) {
+    log('loadWords ' + language);
     const select = document.getElementById('testSelect');
     const scriptUrl = select.value;
-    if (scriptUrl) {
-        // Remove any previously loaded script to prevent duplicates or conflicts
-        const existingScript = document.querySelector('script[data-source="dynamic-words"]');
-        if (existingScript) {
-            document.body.removeChild(existingScript);
-        }
-
-        // Load the new script
-        const script = document.createElement('script');
-        script.src = scriptUrl;
-        script.setAttribute('data-source', 'dynamic-words'); // Mark the script to identify it later
-        document.body.appendChild(script);
-        loadFontSize();
-        script.onload = () => {
-
-            initializeGame(language); // Initialize the game once the words are loaded, passing the language
-        };
-    }
+    const existingScript = document.querySelector('script[data-source="dynamic-words"]');
+    if (existingScript) document.body.removeChild(existingScript);
+    const script = document.createElement('script');
+    script.src = scriptUrl;
+    script.setAttribute('data-source', 'dynamic-words');
+    document.body.appendChild(script);
+    script.onload = () => initializeGame(language);
 }
-
-
-function initializeGame(language = 'en-US') {
-
+function sortTranslations(words) {
+    return words.sort((a, b) => a.translation.localeCompare(b.translation, 'he'));
+}
+function initializeGame(language) {
+    log('initializeGame ' + language);
     if (!words || !Array.isArray(words)) return;
-
     const wordContainer = document.getElementById('wordContainer');
     const translationContainer = document.getElementById('translationContainer');
     wordContainer.innerHTML = '';
     translationContainer.innerHTML = '';
-    updateScore(0); // Reset score at game start
+    updateScore(0);
+    updateFailures(0);  // Ensure this is defined and used correctly as per below
 
     const shuffledWords = shuffleArray([...words]);
-    const shuffledTranslations = shuffleArray([...words]);
-
-
-    let speakTimeout; // Declare a variable to hold the timeout
-
     shuffledWords.forEach(word => {
-        const wordDiv = document.createElement('div');
-        wordDiv.className = 'word';
-        wordDiv.textContent = word.text;
-        wordDiv.draggable = true;
-
-
-        // Existing event listener for drag start
-        wordDiv.addEventListener('dragstart', dragStart);
-
-        // Modified event listener for mouse enter
-        wordDiv.addEventListener('mouseenter', function () {
-            if (!hasEnabledVoice) {
-                const lecture = new SpeechSynthesisUtterance('hello');
-                lecture.volume = 0;
-                speechSynthesis.speak(lecture);
-                hasEnabledVoice = true;
-            }
-
-
-            // Set a timeout to speak the word after 1 second
-            speakTimeout = setTimeout(function () {
-                const voiceSelect = document.getElementById('voiceSelect');
-                const selectedVoice = voiceSelect.value;
-                const utterance = new SpeechSynthesisUtterance(wordDiv.textContent);
-                utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === selectedVoice);
-                utterance.lang = language;
-                speechSynthesis.speak(utterance);
-            }, 1000); // 1000 milliseconds delay
-        });
-
-        // Add event listener for mouse leave
-        wordDiv.addEventListener('mouseleave', function () {
-            // Clear the timeout if the user leaves the word before 1 second
-            clearTimeout(speakTimeout);
-        });
-
+        const wordDiv = createWordDiv(word, language);
         wordContainer.appendChild(wordDiv);
-
     });
 
+    const sortedTranslations = sortTranslations([...words]);
 
 
-    shuffledTranslations.forEach(word => {
-        const translationDiv = document.createElement('div');
-        translationDiv.className = 'translation';
-        translationDiv.textContent = word.translation;
-        translationDiv.addEventListener('dragover', dragOver);
-        translationDiv.addEventListener('drop', drop);
+    sortedTranslations.forEach(word => {
+        const translationDiv = createTranslationDiv(word);
         translationContainer.appendChild(translationDiv);
-
     });
-    loadFontSize();
+    loadFontSize()
 }
 
-function dragStart(event) {
-    event.dataTransfer.setData("text", event.target.textContent);
-}
+function handleAnswer(translationElement, isCorrect, wordElement) {
 
-function dragOver(event) {
-    event.preventDefault();
-}
-
-function drop(event) {
-    event.preventDefault();
-    const draggedText = event.dataTransfer.getData("text");
-    const targetElement = event.target;
-    if (words.some(word => word.text === draggedText && word.translation === event.target.textContent)) {
-        event.target.classList.add("correct");
-        targetElement.style.fontWeight = 'normal'
-        targetElement.style.visibility = "hidden";
-        // event.target.style.backgroundColor = 'lightgreen';
-        document.querySelectorAll('.word').forEach(wordDiv => {
-            if (wordDiv.textContent === draggedText) {
-                wordDiv.style.visibility = "hidden";
-                wordDiv.style.fontWeight = 'normal'
-            }
-        });
-
-        updateScore(score + 1);
-        showMessage(true);
-        if (score === words.length) {
-            document.getElementById('statusMessage').textContent = "המשחק הסתיים בהצלחה!";
-            showConfetti();
+    log('handleAnswer ' + translationElement.textContent + ' ' + wordElement.textContent + ' ' + isCorrect);
+    const blinkClass = isCorrect ? 'blink-correct' : 'blink-incorrect';
+    translationElement.classList.add(blinkClass);
+    translationElement.addEventListener('animationend', function onAnimationEnd() {
+        translationElement.classList.remove(blinkClass);
+        translationElement.removeEventListener('animationend', onAnimationEnd);
+        if (isCorrect) {
+            translationElement.style.transition = 'opacity 0.5s, transform 0.5s';
+            translationElement.style.opacity = '0';
+            translationElement.style.transform = 'scale(0)';
+            translationElement.addEventListener('transitionend', function onTransitionEnd() {
+                translationElement.style.display = 'none';
+                translationElement.removeEventListener('transitionend', onTransitionEnd);
+            });
         }
+    });
+
+    wordElement.classList.add(blinkClass);
+    wordElement.addEventListener('animationend', function onAnimationEnd() {
+        wordElement.classList.remove(blinkClass);
+        wordElement.removeEventListener('animationend', onAnimationEnd);
+        if (isCorrect) {
+            wordElement.style.transition = 'opacity 0.5s, transform 0.5s';
+            wordElement.style.opacity = '0';
+            wordElement.style.transform = 'scale(0)';
+            wordElement.addEventListener('transitionend', function onTransitionEnd() {
+                wordElement.style.display = 'none';
+                wordElement.removeEventListener('transitionend', onTransitionEnd);
+            });
+        }
+    });
+
+    // Update the game score and failure count
+    if (isCorrect) {
+        updateScore(score + 1);
     } else {
-        showMessage(false);
+        updateFailures(failures + 1);
     }
 }
 
-function showMessage(isCorrect) {
-    const messageDiv = document.getElementById('statusMessage');
-    messageDiv.textContent = isCorrect ? `  כל הכבוד!` : `  זה היה קרוב!`;
-    setTimeout(() => messageDiv.textContent = '', 3000);
+function updateFailures(newVal) {
+    log('updateFailures ' + newVal);
+    failures = newVal;
+    document.getElementById('numFailures').textContent = newVal;
 }
 
-function updateName() {
-    playerName = document.getElementById('nameInput').value.trim() || "שחקן";
+function createWordDiv(word, language) {
+    const wordDiv = document.createElement('div');
+    wordDiv.className = 'word';
+    wordDiv.textContent = word.text;
+    wordDiv.draggable = true;
+    wordDiv.addEventListener('dragstart', (event) => handleDragStart(event, language));
+    wordDiv.addEventListener('dragend', handleDragEnd); // Add this line
+
+    wordDiv.addEventListener('touchstart', (event) => handleTouchStart(event, language));
+    document.addEventListener('touchcancel', handleTouchCancel, {passive: false});
+    wordDiv.addEventListener('touchmove', handleTouchMove);
+    wordDiv.addEventListener('touchend', handleTouchEnd);
+
+    wordDiv.addEventListener('mouseenter', () => handleMouseEnter(wordDiv, language));
+    wordDiv.addEventListener('mouseleave', () => clearTimeout(speakTimeout));
+    return wordDiv;
+}
+
+function createTranslationDiv(word) {
+    const translationDiv = document.createElement('div');
+    translationDiv.className = 'translation';
+    translationDiv.textContent = word.translation;
+    translationDiv.addEventListener('dragover', handleDragOver);
+    translationDiv.addEventListener('dragleave', handleDragLeave);
+    translationDiv.addEventListener('drop', handleDrop);
+
+    return translationDiv;
+}
+
+
+function handleMouseEnter(wordDiv, language) {
+    log('handleMouseEnter ' + wordDiv.textContent + ' ' + language + ' ' + hasEnabledVoice);
+
+}
+
+
+function handleTouchStart(event, language) {
+    event.preventDefault();
+    draggedElementOriginal = event.target;
+    draggedElement = event.target.cloneNode(true);
+    document.body.appendChild(draggedElement);
+    draggedElement.style.position = 'fixed';
+    draggedElement.style.zIndex = '1000';
+    draggedElement.style.border = '2px dashed red'; // Optional: add a dashed border
+    draggedElement.style.opacity = '0.5'; // Optional: make the clone semi-transparent
+    handleTouchMove(event); // Update position immediately
+    event.target.classList.add('dragging'); // Indicate original element is being dragged
+
+    speakTimeout = setTimeout(() => {
+        const voiceSelect = document.getElementById('voiceSelect');
+        const selectedVoice = voiceSelect.value;
+        const utterance = new SpeechSynthesisUtterance(draggedElement.textContent);
+        utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === selectedVoice);
+        utterance.lang = language;
+        log(' handleMouseEnter speak: ' + utterance.lang + ' ' + utterance.voice + ' ' + draggedElement.textContent);
+        speechSynthesis.speak(utterance);
+    }, 500);
+}
+
+function handleTouchCancel(event) {
+    log('handleTouchCancel');
+    event.preventDefault();
+    if (!draggedElement) return;
+    document.body.removeChild(draggedElement); // Remove the cloned element
+    resetDraggedElement();
+
+}
+
+function handleTouchMove(event) {
+    if (!draggedElement) return;
+    const touch = event.touches[0];
+    draggedElement.style.left = `${touch.clientX - (draggedElement.offsetWidth / 2)}px`;
+    draggedElement.style.top = `${touch.clientY - (draggedElement.offsetHeight / 2)}px`;
+}
+
+function handleTouchEnd(event) {
+    event.preventDefault();
+    if (!draggedElement) return;
+
+
+    draggedElement.style.display = 'none';
+
+    const touch = event.changedTouches[0];
+    let dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+
+    // Re-display the dragged element
+    draggedElement.style.display = 'block';
+
+    // Navigate up the DOM tree to find the drop target with 'translation' class if not directly hit
+    while (dropTarget && dropTarget.classList && !dropTarget.classList.contains('translation') && dropTarget.parentNode) {
+        dropTarget = dropTarget.parentNode;
+    }
+
+    if (!dropTarget) {
+        log('handleTouchEnd no dropTarget');
+        document.body.removeChild(draggedElement); // Remove the cloned element
+        resetDraggedElement(); // Reset styles and cleanup
+        return;
+    }
+
+
+    if (dropTarget && dropTarget.classList && dropTarget.classList.contains('translation')) {
+
+        const isCorrect = words.some(word =>
+            word.text === draggedElement.textContent &&
+            word.translation === dropTarget.textContent
+        );
+        handleAnswer(dropTarget, isCorrect, draggedElementOriginal);
+    }
+
+    document.body.removeChild(draggedElement); // Remove the cloned element
+    resetDraggedElement(); // Reset styles and cleanup
+}
+
+function resetDraggedElement() {
+    debugger
+    log('resetDraggedElement');
+    document.querySelectorAll('.dragging').forEach(el => {
+        el.classList.remove('dragging');
+    });
+
+
+}
+
+function handleDragStart(event, language) {
+    log('dragStart ' + event.target.textContent);
+    draggedElement = event.target;
+    draggedWord = event.target.textContent;
+    event.dataTransfer.setData("text", event.target.textContent);
+    document.querySelectorAll('.word').forEach(wordDiv => {
+        wordDiv.classList.remove('dragging');
+    });
+    draggedElement.classList.add('dragging');
+
+    if (!hasEnabledVoice) {
+        const lecture = new SpeechSynthesisUtterance('hello');
+        lecture.volume = 0;
+        speechSynthesis.speak(lecture);
+        hasEnabledVoice = true;
+    }
+    speakTimeout = setTimeout(() => {
+        const voiceSelect = document.getElementById('voiceSelect');
+        const selectedVoice = voiceSelect.value;
+        const utterance = new SpeechSynthesisUtterance(draggedWord);
+        utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === selectedVoice);
+        utterance.lang = language;
+        log(' handleDragStart speak: ' + utterance.lang + ' ' + utterance.voice + ' ' + draggedWord);
+        speechSynthesis.speak(utterance);
+    }, 500);
+}
+
+function handleDragEnd(event) {
+    log('dragEnd');
+    if (draggedElement) {
+        resetDraggedElement();
+    }
+}
+
+function handleDragOver(event) {
+    log('dragOver');
+    event.preventDefault();
+    if (event.target.classList.contains('translation')) {
+        event.target.classList.add('highlight');
+    }
+}
+
+function handleDragLeave(event) {
+    log('dragLeave');
+    if (event.target.classList.contains('highlight')) {
+        event.target.classList.remove('highlight');
+    }
+
+    document.querySelectorAll('.dragging').forEach(el => {
+        el.classList.remove('dragging');
+    });
+}
+
+function handleDrop(event) {
+    log('handleDrop');
+    event.preventDefault();
+    if (!draggedElement) return;
+
+    if (event.target.classList.contains('translation')) {
+        event.target.classList.remove('highlight');
+    }
+
+    const dropTarget = event.target;
+    if (dropTarget.classList.contains('translation')) {
+        const isCorrect = words.some(word =>
+            word.text === draggedWord &&
+            word.translation === dropTarget.textContent
+        );
+        handleAnswer(dropTarget, isCorrect, draggedElement);
+
+
+    }
+    resetDraggedElement();
+}
+
+function showMessage(isCorrect) {
+
+    // const messageDiv = document.getElementById('statusMessage');
+    // messageDiv.style.display = 'block';
+    // messageDiv.textContent = isCorrect ? "כל הכבוד!" : "נסה שוב!";
+    // setTimeout(() => { messageDiv.style.display = 'none'; }, 3000);
 }
 
 function updateScore(newScore) {
+    log('updateScore ' + newScore);
     score = newScore;
-    document.getElementById('scoreDisplay').textContent = `נקודות: ${score}`;
+    document.getElementById('scoreDisplay').textContent = `${score}`;
+
+    if (score === words.length) {
+        // endTime = new Date(); // End time when game finishes
+        //  const duration = (endTime - startTime) / 1000; // Calculate duration in seconds
+        document.getElementById('statusMessage').textContent = "המשחק הסתיים בהצלחה! ";
+        document.getElementById('statusMessage').style.display = 'block';
+        showConfetti();
+    }
 }
 
 function showConfetti() {
     const confettiCount = 100;
     const confettiElement = document.createElement('div');
     document.body.appendChild(confettiElement);
-
     for (let i = 0; i < confettiCount; i++) {
         const confetti = document.createElement('div');
         confetti.classList.add('confetti');
         confetti.style.left = `${Math.random() * 100}%`;
         confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-        confetti.style.animationDuration = `${Math.random() * 2 + 1}s`; // Random animation duration between 1s to 3s
-        confetti.style.opacity = Math.random(); // Random opacity for each confetti
-        confetti.style.top = `${-Math.random() * 20}px`; // Start from above the screen
+        confetti.style.animationDuration = `${Math.random() * 2 + 1}s`;
+        confetti.style.opacity = Math.random();
+        confetti.style.top = `${-Math.random() * 20}px`;
         confettiElement.appendChild(confetti);
     }
-
-    setTimeout(() => confettiElement.remove(), 3000); // Remove confetti after 3 seconds
+    setTimeout(() => {
+        confettiElement.remove();
+    }, 3000);
 }
 
-
+document.getElementById('toggleMenuBtn').addEventListener('click', function() {
+    const menu = document.getElementById('menu');
+    menu.classList.toggle('active'); // This toggles the visibility and position of the menu
+});

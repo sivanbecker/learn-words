@@ -3,41 +3,74 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <title> התאמת מילים</title>
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-    <div class="score-display" id="scoreDisplay">נקודות: 0</div>
-    <div class="control-panel">
-        <button href="javascript:void(0);" id="resetGameButton" onclick="loadSelectedTest()">חדש</button>
-        <button id="decreaseFont" onclick="changeFontSize(-1)">A-</button>
-        <button id="increaseFont" onclick="changeFontSize(1)">A+</button>
-    
-        <div class="dropdown-group">
-            <label for="voiceSelect">קולות מותקנים במכשיר:</label>
-            <select id="voiceSelect"></select>
-        </div>
-    
-        <div class="dropdown-group">
-            <label for="testSelect">בחר הכתבה:</label>
-            <select id="testSelect"></select>
-        </div>
+<div id="overlay" style="display: none">
+    <h2 class="overlay-title">ברוכים הבאים!</h2>
+    <p class="overlay-text">בחרו הכתבה כדי להתחיל במשחק</p>
+    <div class="overlay-control" id="overlay-control">
+
     </div>
-    
-    
+</div>
+<div class="control-panel">
+ 
+    <select id="testSelect"></select>
+    <button id="newGameBtn" onclick="loadSelectedTest()"> חדש</button>
 
 
-    <div class="status-message" id="statusMessage"></div>
-    <div class="instructions">.יש לגרור כל מילה אל התרגום שלה</div>
-    <div class="game-area">
-        <div class="word-container" id="wordContainer"></div>
-        <div class="separator"></div>
-        <div class="translation-container" id="translationContainer"></div>
+</div>
+<div class="statistics">
+    <div class="instructions">יש לגרור כל מילה אל התרגום שלה.</div>
+ 
+    <!--    <p>Number of Attempts: <span id="numAttempts">0</span></p>-->
+    <p>נקודות: <span id="scoreDisplay">0</span></p>
+    <p>שגיאות: <span id="numFailures">0</span></p>
+   
+</div>
+
+<div class="status-message" style="display: none" id="statusMessage"></div>
+
+<div class="game-area">
+    <div class="word-container" id="wordContainer"></div>
+    <div class="separator"></div>
+    <div class="translation-container" id="translationContainer"></div>
+</div>
+<button id="toggleMenuBtn" class="hamburger">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+</button>
+
+<div class="control-panel-bottom" id="menu">
+
+
+    <div class="dropdown-group">
+        <label for="voiceSelect">קולות מותקנים במכשיר:</label>
+        <select id="voiceSelect"></select>
     </div>
-    <script src="list.js"></script>
-    <script src="game.js"></script>
+
+    <div class="dropdown-group">
+        <label for="font-sizes">שנה גודל כתב:</label>
+        <div class="buttons-group" id="font-sizes">
+            <button id="decreaseFont" onclick="changeFontSize(-1)">A-</button>
+            <button id="increaseFont" onclick="changeFontSize(1)">A+</button>
+
+
+        </div>
+    </div>
+
+
+</div>
+<!--<div id="log" style="background-color: antiquewhite"></div>-->
+
+<script src="game.js"></script>
 </body>
 
 </html>
