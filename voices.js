@@ -1,5 +1,6 @@
   languages = {
     "fr": {
+        test_word:"Bonjour, Enchanté de vous rencontrer",
         voices:[
             {
                 "name": "Audrey",
@@ -188,6 +189,7 @@
         ]
     },
     "en": {
+        test_word:"Hello, Nice to meet you",
         voices: [
             {
                 "name": "Ava",

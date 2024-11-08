@@ -145,20 +145,28 @@ function loadVoices(language) {
     function saveSelectedVoice() {
         log('saveSelectedVoice ' + this.value + ' ' + language);
         localStorage.setItem('selectedVoice_' + language, this.value);
+        // speak the testWord
+        const utterance = new SpeechSynthesisUtterance(testWord);
+        utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === this.value);
+        utterance.lang = language;
+        speechSynthesis.speak(utterance);
+        
     }
 
+    let testWord = "hello";
     const checkVoices = () => {
         const voices = speechSynthesis.getVoices().filter(v => {
 
-            const valid = v.lang.startsWith(`${language}-`) && languages[language].voices.map(x=>x.name).includes(v.name);
+            const valid = v.lang.startsWith(`${language}-`) && languages[language].voices.map(x => x.name).includes(v.name);
             if (!valid) {
                 log('checkVoices voice: ' + v.name + ' ' + v.lang + ' ' + valid);
             }
             return valid;
         });
-        
+
 
         if (voices.length > 0 || attempts >= maxAttempts) {
+            testWord = languages[language].test_word;
             log('checkVoices voices: ' + voices.length);
             voices.forEach(voice => {
                 let option = document.createElement('option');
@@ -380,7 +388,7 @@ function handleTouchStart(event, language) {
         const utterance = new SpeechSynthesisUtterance(draggedElement.textContent);
         utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === selectedVoice);
         utterance.lang = language;
-        
+
         log(' handleMouseEnter speak: ' + utterance.lang + ' ' + utterance.voice.name + ' ' + draggedElement.textContent);
         speechSynthesis.speak(utterance);
     }, 500);
