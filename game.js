@@ -52,7 +52,7 @@ let startTime, endTime;
 let draggedElement = null;
 let draggedElementOriginal = null;
 let draggedWord = null;
-
+let testWord = "hello";
 
 function getGuid() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -155,7 +155,7 @@ function loadVoices(language) {
         
     }
 
-    let testWord = "hello";
+  
     const checkVoices = () => {
         const voices = speechSynthesis.getVoices().filter(v => {
 
