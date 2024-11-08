@@ -134,6 +134,19 @@ function loadSelectedTest() {
 
 }
 
+function saveSelectedVoice() {
+    log('saveSelectedVoice ' + this.value);
+
+    // speak the testWord
+    speakTimeout = setTimeout(() => {
+        const testVoiceMessage = new SpeechSynthesisUtterance(testWord);
+        testVoiceMessage.voice = speechSynthesis.getVoices().find(voice => voice.name === this.value);
+
+        speechSynthesis.speak(testVoiceMessage);
+    }, 500);
+
+}
+
 function loadVoices(language) {
     log('loadVoices ' + language);
     const voiceSelect = document.getElementById('voiceSelect');
@@ -142,20 +155,7 @@ function loadVoices(language) {
     voiceSelect.removeEventListener('change', saveSelectedVoice);
     voiceSelect.addEventListener('change', saveSelectedVoice);
 
-    function saveSelectedVoice() {
-        log('saveSelectedVoice ' + this.value + ' ' + language);
-        localStorage.setItem('selectedVoice_' + language, this.value);
-        // speak the testWord
-        speakTimeout = setTimeout(() => {
-            const testVoiceMessage = new SpeechSynthesisUtterance(testWord);
-            testVoiceMessage.voice = speechSynthesis.getVoices().find(voice => voice.name === this.value);
-            testVoiceMessage.lang = language;
-            speechSynthesis.speak(testVoiceMessage);
-        },500);
-        
-    }
 
-  
     const checkVoices = () => {
         const voices = speechSynthesis.getVoices().filter(v => {
 
