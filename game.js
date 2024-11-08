@@ -146,10 +146,12 @@ function loadVoices(language) {
         log('saveSelectedVoice ' + this.value + ' ' + language);
         localStorage.setItem('selectedVoice_' + language, this.value);
         // speak the testWord
-        const utterance = new SpeechSynthesisUtterance(testWord);
-        utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === this.value);
-        utterance.lang = language;
-        speechSynthesis.speak(utterance);
+        speakTimeout = setTimeout(() => {
+            const testVoiceMessage = new SpeechSynthesisUtterance(testWord);
+            testVoiceMessage.voice = speechSynthesis.getVoices().find(voice => voice.name === this.value);
+            testVoiceMessage.lang = language;
+            speechSynthesis.speak(testVoiceMessage);
+        },500);
         
     }
 
