@@ -343,46 +343,9 @@
                 "rate": 1,
                 "pitch": 1
             },
-            {
-                "name": "Isha",
-                "label": "Isha",
-                "language": "en-IN",
-                "gender": "female",
-                "rate": 1,
-                "pitch": 1
-            },
-            {
-                "name": "Sangeeta",
-                "label": "Sangeeta",
-                "language": "en-IN",
-                "gender": "female",
-                "rate": 1,
-                "pitch": 1
-            },
-            {
-                "name": "Rishi",
-                "label": "Rishi",
-                "language": "en-IN",
-                "gender": "female",
-                "rate": 1,
-                "pitch": 1
-            },
-            {
-                "name": "Moira",
-                "label": "Moira",
-                "language": "en-IE",
-                "gender": "female",
-                "rate": 1,
-                "pitch": 1
-            },
-            {
-                "name": "Tessa",
-                "label": "Tessa",
-                "language": "en-ZA",
-                "gender": "female",
-                "rate": 1,
-                "pitch": 1
-            },
+           
+            
+            
             {
                 "name": "Fiona",
                 "label": "Fiona",
@@ -495,30 +458,8 @@
                 "rate": 1,
                 "pitch": 1
             },
-            {
-                "name": "Microsoft Heera - English (India)",
-                "label": "Heera",
-                "language": "en-IN",
-                "gender": "female",
-                "rate": 1,
-                "pitch": 1
-            },
-            {
-                "name": "Microsoft Ravi - English (India)",
-                "label": "Ravi",
-                "language": "en-IN",
-                "gender": "male",
-                "rate": 1,
-                "pitch": 1
-            },
-            {
-                "name": "Microsoft Sean - English (Ireland)",
-                "label": "Sean",
-                "language": "en-IE",
-                "gender": "male",
-                "rate": 1,
-                "pitch": 1
-            },
+           
+           
             {
                 "name": "Google US English 5 (Natural)",
                 "label": "Female voice 1 (US)",
@@ -667,38 +608,6 @@
                 "name": "Chrome OS Australian English 5",
                 "label": "Male voice 3 (Australia)",
                 "language": "en-AU",
-                "gender": "male",
-                "rate": 1,
-                "pitch": 1
-            },
-            {
-                "name": "Android Speech Recognition and Synthesis from Google en-in-x-ena-network",
-                "label": "Female voice 1 (India)",
-                "language": "en-IN",
-                "gender": "female",
-                "rate": 1,
-                "pitch": 1
-            },
-            {
-                "name": "Android Speech Recognition and Synthesis from Google en-in-x-enc-network",
-                "label": "Female voice 2 (India)",
-                "language": "en-IN",
-                "gender": "female",
-                "rate": 1,
-                "pitch": 1
-            },
-            {
-                "name": "Android Speech Recognition and Synthesis from Google en-in-x-end-network",
-                "label": "Male voice 1 (India)",
-                "language": "en-IN",
-                "gender": "male",
-                "rate": 1,
-                "pitch": 1
-            },
-            {
-                "name": "Android Speech Recognition and Synthesis from Google en-in-x-ene-network",
-                "label": "Male voice 2 (India)",
-                "language": "en-IN",
                 "gender": "male",
                 "rate": 1,
                 "pitch": 1

@@ -157,6 +157,8 @@ function loadVoices(language) {
 
 
     const checkVoices = () => {
+        const voiceConfigs = languages[language]?.voices;
+        
         const voices = speechSynthesis.getVoices().filter(v => {
 
             const valid = v.lang.startsWith(`${language}-`) && languages[language].voices.map(x => x.name).includes(v.name);
@@ -171,8 +173,9 @@ function loadVoices(language) {
             testWord = languages[language].test_word;
             log('checkVoices voices: ' + voices.length);
             voices.forEach(voice => {
+                const voiceConfig = voiceConfigs.find(vc => vc.name === voice.name && vc.language === voice.lang);
                 let option = document.createElement('option');
-                option.textContent = `${voice.name} (${voice.lang})`;
+                option.textContent = voiceConfig.label || `${voice.name} (${voice.lang})`; // Fallback to name and language if label is missing
                 option.value = voice.name;
                 voiceSelect.appendChild(option);
             });
@@ -609,7 +612,9 @@ function loadPartsOfSpeech() {
         partOfSpeechContainer.appendChild(targetDiv);
     });
 }
-
+function closeSettings() {
+    document.getElementById('menu').classList.remove('active');
+}
 document.getElementById('toggleMenuBtn').addEventListener('click', function () {
     const menu = document.getElementById('menu');
     menu.classList.toggle('active'); // This toggles the visibility and position of the menu
@@ -637,7 +642,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initSelects()
 
     if (window.innerWidth <= 1200) {
-        const overlay = document.getElementById("overlay");
+        const overlay = document.getElementById("overlay-start");
         overlay.style.display = "flex";
 
         // Clone the populated select
