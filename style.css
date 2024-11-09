@@ -157,6 +157,7 @@ body {
     .instructions {font-size: 0.8rem;}
 }
 
+/* Base styles for the status message */
 .status-message {
     font-weight: bold;
     position: fixed;
@@ -168,7 +169,25 @@ body {
     color: white;
     padding: 10px 20px;
     border-radius: 0 0 10px 10px;
+    opacity: 0; /* Start hidden */
+    visibility: hidden; /* Ensure it doesn't interfere when not shown */
+    transition: visibility 0s, opacity 0.5s linear;
 }
+
+/* Class to show the message */
+.status-message.show {
+    visibility: visible;
+    opacity: 1;
+    animation: fadeOutMessage 6.5s forwards;
+}
+
+/* Keyframes to fade out the message */
+@keyframes fadeOutMessage {
+    0% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
 
 #nameInput {
     padding: 10px;

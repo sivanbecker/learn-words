@@ -572,8 +572,15 @@ function updateScore(newScore) {
     if (score === words.length) {
         // endTime = new Date(); // End time when game finishes
         //  const duration = (endTime - startTime) / 1000; // Calculate duration in seconds
-        document.getElementById('statusMessage').textContent = "המשחק הסתיים בהצלחה! ";
-        document.getElementById('statusMessage').style.display = 'block';
+        const statusMessage = document.getElementById('statusMessage');
+        statusMessage.textContent = "המשחק הסתיים בהצלחה!"; // Set message text
+
+        statusMessage.classList.add('show');
+
+        // Use setTimeout to allow the browser to redraw, then re-add the show class
+        setTimeout(() => {
+            statusMessage.classList.remove('show');
+        }, 4000); // Short delay
         showConfetti();
     }
 }
