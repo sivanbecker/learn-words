@@ -161,7 +161,8 @@ function loadVoices(language) {
         
         const voices = speechSynthesis.getVoices().filter(v => {
 
-            const valid = v.lang.startsWith(`${language}-`) && languages[language].voices.map(x => x.name).includes(v.name);
+            const valid = v.lang.startsWith(`${language}-`); 
+                //&& languages[language].voices.map(x => x.name).includes(v.name);
             if (!valid) {
                 log('checkVoices voice: ' + v.name + ' ' + v.lang + ' ' + valid);
             }
