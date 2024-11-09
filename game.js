@@ -174,9 +174,9 @@ function loadVoices(language) {
             testWord = languages[language].test_word;
             log('checkVoices voices: ' + voices.length);
             voices.forEach(voice => {
-                const voiceConfig = voiceConfigs.find(vc => vc.name === voice.name && vc.language === voice.lang);
+               // const voiceConfig = voiceConfigs.find(vc => vc.name === voice.name && vc.language === voice.lang);
                 let option = document.createElement('option');
-                option.textContent = voiceConfig.label || `${voice.name} (${voice.lang})`; // Fallback to name and language if label is missing
+                option.textContent = /*voiceConfig.label || */`${voice.name} (${voice.lang})`; // Fallback to name and language if label is missing
                 option.value = voice.name;
                 voiceSelect.appendChild(option);
             });
