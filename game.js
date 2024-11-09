@@ -104,10 +104,10 @@ function updateUrlParam(key, value) {
 
 function log(msg) {
     console.log(msg);
-    const logElement = document.getElementById('log');
-    const p = document.createElement('p');
-    p.textContent = msg;
-    logElement.insertBefore(p, logElement.firstChild);
+    // const logElement = document.getElementById('log');
+    // const p = document.createElement('p');
+    // p.textContent = msg;
+    // logElement.insertBefore(p, logElement.firstChild);
 }
 
 
