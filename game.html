@@ -10,6 +10,19 @@
         gtag('js', new Date());
 
         gtag('config', 'G-JFJBS3FGK3');
+
+        function sendEvent(action, category, label, value) {
+            try {
+                gtag('event', action, {
+                    'event_category': category,
+                    'event_label': label,
+                    'value': value
+                });
+            }catch (e) {
+                
+            }
+           
+        }
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">

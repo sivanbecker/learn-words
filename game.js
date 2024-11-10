@@ -114,7 +114,10 @@ function log(msg) {
 function loadSelectedTest() {
     const testSelect = document.getElementById('testSelect');
     const gameTypeSelect = document.getElementById('gameTypeSelect');
-
+    sendEvent('loadSelectedTest', 'game controls', 'start new game', {
+        game: testSelect.value,
+        type: gameTypeSelect.value
+    });
     setTimeout(() => {
 
         loadVoices(testSelect.options[testSelect.selectedIndex].dataset.lang);
@@ -158,11 +161,11 @@ function loadVoices(language) {
 
     const checkVoices = () => {
         const voiceConfigs = languages[language]?.voices;
-        
+
         const voices = speechSynthesis.getVoices().filter(v => {
 
-            const valid = v.lang.startsWith(`${language}-`); 
-                //&& languages[language].voices.map(x => x.name).includes(v.name);
+            const valid = v.lang.startsWith(`${language}-`);
+            //&& languages[language].voices.map(x => x.name).includes(v.name);
             if (!valid) {
                 log('checkVoices voice: ' + v.name + ' ' + v.lang + ' ' + valid);
             }
@@ -171,10 +174,12 @@ function loadVoices(language) {
 
 
         if (voices.length > 0 || attempts >= maxAttempts) {
+            sendEvent('loadVoices', 'game controls', 'load voices', {language: language, voices: voices.length});
+
             testWord = languages[language].test_word;
             log('checkVoices voices: ' + voices.length);
             voices.forEach(voice => {
-               // const voiceConfig = voiceConfigs.find(vc => vc.name === voice.name && vc.language === voice.lang);
+                // const voiceConfig = voiceConfigs.find(vc => vc.name === voice.name && vc.language === voice.lang);
                 let option = document.createElement('option');
                 option.textContent = /*voiceConfig.label || */`${voice.name} (${voice.lang})`; // Fallback to name and language if label is missing
                 option.value = voice.name;
@@ -215,6 +220,7 @@ function changeFontSize(change) {
     });
     // Save the new font size to local storage
     saveFontSizeToLocal(words[0].style.fontSize);
+    sendEvent('changeFontSize', 'game controls', 'change font size', {change: change, size: words[0].style.fontSize});
 }
 
 function saveFontSizeToLocal(fontSize) {
@@ -292,7 +298,11 @@ function handleAnswer(targetEl, isCorrect, wordElement) {
     log('handleAnswer ' + targetEl.textContent + ' ' + wordElement.textContent + ' ' + isCorrect);
     const blinkClass = isCorrect ? 'blink-correct' : 'blink-incorrect';
 
-
+    sendEvent('handleAnswer', 'game controls', 'answer', {
+        target: targetEl.textContent,
+        word: wordElement.textContent,
+        correct: isCorrect
+    });
     targetEl.classList.add(blinkClass);
     targetEl.addEventListener('animationend', function onAnimationEnd() {
         targetEl.classList.remove(blinkClass);
@@ -575,7 +585,7 @@ function updateScore(newScore) {
         //  const duration = (endTime - startTime) / 1000; // Calculate duration in seconds
         const statusMessage = document.getElementById('statusMessage');
         statusMessage.textContent = "המשחק הסתיים בהצלחה!"; // Set message text
-
+        sendEvent('updateScore', 'game controls', 'game over', {score: score, failures: failures});
         statusMessage.classList.add('show');
 
         // Use setTimeout to allow the browser to redraw, then re-add the show class
@@ -620,12 +630,15 @@ function loadPartsOfSpeech() {
         partOfSpeechContainer.appendChild(targetDiv);
     });
 }
+
 function closeSettings() {
     document.getElementById('menu').classList.remove('active');
 }
+
 document.getElementById('toggleMenuBtn').addEventListener('click', function () {
     const menu = document.getElementById('menu');
     menu.classList.toggle('active'); // This toggles the visibility and position of the menu
+    sendEvent('toggleMenu', 'game controls', 'toggle menu', {active: menu.classList.contains('active')});
 });
 
 document.body.addEventListener('click', () => {
