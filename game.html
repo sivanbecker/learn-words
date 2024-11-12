@@ -40,11 +40,22 @@
 
 <div class="control-panel">
  
+
+    <div class="form-field">
+        <label for="testSelect">תרגול:</label>
     <select id="testSelect"></select>
+    </div>
+
+    <div class="form-field">
+        <label for="gameTypeSelect">משחק:</label>
     <select id="gameTypeSelect">
         <option value="translation">תרגום</option>
         <option value="partOfSpeech">חלק משפט</option>
+<!--            <option value="missingWord">השלמת משפטים</option>-->
     </select>
+    </div>
+
+
     <button id="newGameBtn" onclick="loadSelectedTest()">חדש</button>
     <a href="javascript:;" id="toggleMenuBtn" class="settings-link" title="הגדרות" ><i class="fas fa-cog"></i> </a>
 </div>
